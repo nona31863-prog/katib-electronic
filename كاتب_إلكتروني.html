@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#166534">
+<title>كاتب إلكتروني</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f6f4;color:#172019;font-family:Arial,sans-serif}
+header{background:#166534;color:#fff;padding:18px;text-align:center}header h1{margin:0;font-size:24px}header p{margin:7px 0 0;font-size:13px}
+header{display:none}
+nav{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:4px;background:#fff;position:sticky;top:0;z-index:3}
+nav button{
+  border:0;border-radius:42px;min-height:40px;padding:3px 2px;
+  background:#e8efe9;color:#14532d;font-weight:bold;
+  font-size:12px;line-height:1;
+  box-shadow:none;
+}
+nav button.on{background:#166534;color:#fff}
+@media(max-width:700px){
+  nav{gap:14px;padding:14px}
+  nav button{min-height:35px;border-radius:8px;font-size:11px}
+}
+main{max-width:700px;margin:auto;padding:12px}.page{display:none}.page.on{display:block}
+.card{background:#fff;border:1px solid #dce5de;border-radius:14px;padding:15px;margin-bottom:12px}
+h2{font-size:19px;margin:0 0 14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:block;font-size:13px;color:#647168;margin-bottom:5px;font-weight:bold}
+input,select{width:100%;padding:12px;border:1px solid #ccd8cf;border-radius:10px;font-size:16px;background:#fff}
+.full{grid-column:1/-1}.btn{width:100%;border:0;border-radius:10px;background:#166534;color:#fff;padding:13px;font-size:16px;font-weight:bold;margin-top:12px}
+.row{display:flex;justify-content:space-between;gap:8px;align-items:center;border-bottom:1px solid #edf1ed;padding:11px 0}
+.row:last-child{border-bottom:0}.small{font-size:13px;color:#68756d}.money{font-weight:bold;color:#166534}
+.result{background:#f0f7f1;border-radius:12px;padding:13px;margin-top:12px;line-height:1.9}
+.result strong{color:#166534}.empty{text-align:center;color:#777;padding:18px}
+.danger{background:#fff0ee;color:#a52217;border:0;border-radius:8px;padding:7px 9px}
+@media(max-width:420px){nav{grid-template-columns:repeat(3,1fr)}nav button{font-size:12px}.grid{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<style>
+#loginGate{position:fixed;inset:0;background:#f4f6f4;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px}
+#loginBox{width:100%;max-width:360px;background:#fff;border-radius:16px;padding:22px;box-shadow:0 8px 30px #0002;text-align:center}
+#loginBox h2{margin:0 0 12px}#loginBox input{width:100%;padding:13px;border:1px solid #ccd8cf;border-radius:10px;font-size:17px;direction:ltr;text-align:center}
+#loginBox button{width:100%;border:0;border-radius:10px;background:#166534;color:#fff;padding:13px;font-size:16px;font-weight:bold;margin-top:10px}
+#loginError{color:#a52217;font-size:13px;margin-top:8px;min-height:18px}
+</style>
+<div id="loginGate">
+  <div id="loginBox">
+    <h2>🔐 كاتب إلكتروني</h2>
+    <div class="small">أدخل الرمز للدخول</div>
+    <input id="loginCode" type="password" autocomplete="off" placeholder="الرمز">
+    <button id="loginBtn">دخول</button>
+    <div id="loginError"></div>
+  </div>
+</div>
+<script>
+(function(){
+ const code='AilmramA';
+ const gate=document.getElementById('loginGate');
+ const input=document.getElementById('loginCode');
+ const btn=document.getElementById('loginBtn');
+ const err=document.getElementById('loginError');
+ function login(){if(input.value===code){gate.style.display='none';sessionStorage.setItem('كاتب_إلكتروني_login','1');}else{err.textContent='الرمز غير صحيح';input.value='';input.focus();}}
+ if(sessionStorage.getItem('كاتب_إلكتروني_login')==='1') gate.style.display='none';
+ btn.addEventListener('click',login); input.addEventListener('keydown',e=>{if(e.key==='Enter')login();});
+})();
+</script>
+
+<header><h1>🧾 كاتب إلكتروني</h1><p>سعر الوزن + 250 للفلاح/قطعة + 200 للحمال/قطعة + 50 لصاحب الشغل/قطعة ثم 7% على المجموع</p></header>
+<nav>
+<button class="on" data-p="sale">➕ تسجيل بيع</button>
+<button data-p="farmers">👨‍🌾 الفلاحين</button>
+<button data-p="records">📋 السجل</button>
+<button data-p="daily">📊 يوم الفلاح</button>
+<button data-p="prices">💰 الأسعار</button>
+<button data-p="backup">💾 النسخة</button>
+<button data-p="ownerShare">👷 حصة صاحب الشغل</button>
+<button data-p="porterShare">🚚 حصة الحمال</button>
+<button data-p="debts">💳 الديون</button>
+</nav>
+<main>
+<section id="sale" class="page on">
+<div class="card">
+<h2>تسجيل عملية بيع</h2>
+<form id="saleForm">
+<div class="grid">
+<div class="full"><label>اسم الفلاح</label><select id="farmer" required></select></div>
+<div><label>نوع الخضرة</label><select id="veg" required></select></div>
+<div><label>عدد القطع</label><input id="pieces" type="number" min="1" step="1" required></div>
+<div><label>الوزن (كغم)</label><input id="weight" type="number" min="0" step="0.01" required></div>
+<div><label>السعر النهائي من البقال (د.ع/كغم)</label><input id="price" type="number" min="0" step="1" required></div>
+<div class="full"><label><input id="isDebt" type="checkbox" style="width:auto;margin-left:6px"> بيع بالدين</label><div id="debtBuyerWrap" style="display:none;margin-top:6px"><input id="debtBuyer" placeholder="اسم صاحب الدين"></div></div>
+</div>
+<div class="result" id="calc">أدخل البيانات حتى يظهر الحساب.</div>
+<button class="btn">حفظ العملية</button>
+</form>
+</div>
+<div class="card">
+<h2>مثال الحساب</h2>
+<div class="small">10 كغم × 1,000 = 10,000 د.ع<br>نضيف 250 للفلاح + 200 للحمال + 50 لصاحب الشغل لكل قطعة<br>ثم نحسب 7% على المجموع كله<br><b>المبلغ النهائي يحسب تلقائياً</b></div>
+</div>
+</section>
+
+<section id="farmers" class="page">
+<div class="card"><h2>إضافة فلاح</h2>
+<form id="farmerForm"><label>اسم الفلاح</label><input id="fname" required placeholder="اكتب الاسم"><button class="btn">حفظ الفلاح</button></form></div>
+<div class="card"><h2>الفلاحين</h2><div id="farmerList"></div></div>
+</section>
+
+<section id="records" class="page">
+<div class="card"><h2>السجل</h2><div id="recordList"></div></div>
+</section>
+
+<section id="prices" class="page">
+<div class="card"><h2>أسعار الخضرة</h2>
+<p class="small">هنا تحدد السعر المعتاد لكل نوع. عند اختيار الخضرة في تسجيل البيع، يظهر سعرها تلقائياً. وإذا تغير السعر، عدّله هنا، والعمليات القديمة تبقى محفوظة بسعرها القديم.</p>
+<form id="productForm"><div class="grid">
+<div><label>نوع الخضرة</label><input id="pname" required placeholder="مثلاً خيار"></div>
+<div><label>السعر النهائي للبقال (د.ع/كغم)</label><input id="pprice" type="number" min="0" required placeholder="500"></div>
+</div><button class="btn">إضافة / حفظ السعر</button></form>
+</div>
+<div class="card"><div id="productList"></div></div>
+</section>
+
+<section id="daily" class="page">
+<div class="card"><h2>حساب الفلاح اليومي</h2>
+<p class="small">اختار الفلاح والتاريخ حتى تشوف كل نوع خضرة وحده، مع مجموع الوزن والقطع والحساب.</p>
+<div class="grid">
+<div><label>الفلاح</label><select id="dailyFarmer"></select></div>
+<div><label>التاريخ</label><input id="dailyDate" type="date"></div>
+</div>
+<div id="dailySummary" style="margin-top:12px"></div>
+</div>
+</section>
+
+<section id="backup" class="page">
+<div class="card"><h2>نسخة احتياطية</h2><p class="small">احفظ نسخة حتى لا تضيع البيانات إذا تغير الجهاز.</p><button class="btn" id="export">تنزيل النسخة</button></div>
+<div class="card"><h2>استرجاع</h2><input type="file" id="file" accept=".json"><button class="btn" id="import">استرجاع النسخة</button></div>
+</section>
+<section id="ownerShare" class="page">
+<div class="card"><h2>👷 حصة صاحب الشغل</h2>
+<div class="result" id="ownerShareSummary">لا توجد عمليات بعد.</div>
+</div>
+</section>
+<section id="porterShare" class="page">
+<div class="card"><h2>🚚 حصة الحمال</h2>
+<div class="result" id="porterShareSummary">لا توجد عمليات بعد.</div>
+</div>
+</section>
+
+<section id="debts" class="page">
+<div class="card"><h2>💳 تسجيل دين</h2>
+<form id="debtForm"><div class="grid">
+<div class="full"><label>اسم الشخص</label><input id="debtName" required placeholder="اكتب الاسم"></div>
+<div><label>نوع الخضرة</label><select id="debtVeg" required></select></div>
+<div><label>عدد القطع</label><input id="debtPieces" type="number" min="1" step="1" required placeholder="مثلاً 10"></div>
+<div><label>السعر للقطعة (د.ع)</label><input id="debtPrice" type="number" min="0" step="1" required placeholder="مثلاً 1000"></div>
+<div class="full"><div class="result" id="debtCalc">إدخل عدد القطع والسعر حتى يظهر مبلغ الدين.</div></div>
+<div><label>التاريخ</label><input id="debtDate" type="date" required></div>
+</div><button class="btn">حفظ الدين</button></form></div>
+<div class="card"><h2>مجموع الديون</h2><div class="result" id="debtSummary"></div></div>
+<div class="card"><h2>قائمة الديون</h2><div id="debtList"></div></div>
+</section>
+</main>
+<script>
+const KEY='falah_simple_v2';
+let d={farmers:[],sales:[],debts:[],products:[{id:'tomato',name:'طماطة',price:500},{id:'pepper',name:'فلفل',price:500}]};
+try{d=JSON.parse(localStorage.getItem(KEY))||d;if(!d.products)d.products=[];if(!d.debts)d.debts=[];d.debts=d.debts.map(x=>({...x,paid:+(x.paid||0)}))}catch(e){}
+const $=x=>document.getElementById(x);
+const fmt=n=>Number(n||0).toLocaleString('en-US',{maximumFractionDigits:2});
+const money=n=>fmt(n)+' د.ع';
+const id=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
+const esc=s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
+function calc(s){
+let base=s.weight*s.price;
+let farmer=s.pieces*250;
+let porter=s.pieces*200;
+let owner=s.pieces*50;
+let before7=base+farmer+porter+owner;
+let owner7=before7*.07;
+let final=before7+owner7;
+return{base,farmer,porter,owner,owner7,before7,final};
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(d));render()}
+function renderDaily(){
+let oldFid=$('dailyFarmer').value;
+$('dailyFarmer').innerHTML='<option value="">اختار الفلاح</option>'+d.farmers.map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join('');
+if(oldFid) $('dailyFarmer').value=oldFid;
+let fid=$('dailyFarmer').value,date=$('dailyDate').value;
+if(!fid){$('dailySummary').innerHTML='<div class="empty">اختار الفلاح.</div>';return}
+let rows=d.sales.filter(s=>s.farmerId===fid&&s.date===date);
+if(!rows.length){$('dailySummary').innerHTML='<div class="empty">ماكو مبيعات لهذا الفلاح بهذا اليوم.</div>';return}
+let groups={};
+rows.forEach(s=>{let k=s.veg;if(!groups[k])groups[k]={veg:k,pieces:0,weight:0,base:0,farmer:0,porter:0,owner:0,owner7:0,before7:0,final:0};let g=groups[k],c=calc(s);g.pieces+=s.pieces;g.weight+=s.weight;g.base+=c.base;g.farmer+=c.farmer;g.porter+=c.porter;g.owner+=c.owner;g.owner7+=c.owner7;g.before7+=c.before7;g.final+=c.final});
+let total={pieces:0,weight:0,farmerNet:0};
+Object.values(groups).forEach(g=>{total.pieces+=g.pieces;total.weight+=g.weight;total.farmerNet+=g.base+g.farmer});
+$('dailySummary').innerHTML=Object.values(groups).map(g=>`<div class="card" style="margin-top:10px">
+<h3 style="margin:0 0 10px">🥬 ${esc(g.veg)}</h3>
+<div class="small">عدد القطع: <b>${fmt(g.pieces)}</b> &nbsp; | &nbsp; الوزن: <b>${fmt(g.weight)} كغم</b></div>
+<div class="result" style="margin-top:10px">
+<div style="padding:10px;background:#f7faf7;border-radius:10px;margin-bottom:8px">💰 <b>سعر الوزن</b><br>${fmt(g.weight)} كغم × سعر الكيلو = <strong>${money(g.base)}</strong></div>
+<div style="padding:10px;background:#f7faf7;border-radius:10px;margin-bottom:8px">👨‍🌾 <b>الفلاح</b><br>250 د.ع × ${fmt(g.pieces)} قطعة = <strong>${money(g.farmer)}</strong></div>
+<div style="border-top:1px solid #dce5de;margin-top:8px;padding-top:8px"><b>صافي مستحق الفلاح</b> = <strong>${money(g.base+g.farmer)}</strong></div>
+</div></div>`).join('')+`<div class="result"><b>مجموع اليوم</b><br>القطع: <strong>${fmt(total.pieces)}</strong> · الوزن: <strong>${fmt(total.weight)} كغم</strong><br>صافي مستحق الفلاح: <strong>${money(total.farmerNet)}</strong></div>`;
+}
+
+function renderDebts(){
+let total=d.debts.reduce((sum,x)=>sum+(+x.amount||0),0);
+let paid=d.debts.reduce((sum,x)=>sum+(+x.paid||0),0);
+let remaining=total-paid;
+$('debtSummary').innerHTML=`إجمالي الدين: <strong>${money(total)}</strong><br>المسدّد: <strong>${money(paid)}</strong><br>المتبقي: <strong>${money(remaining)}</strong>`;
+$('debtVeg').innerHTML='<option value="">اختار نوع الخضرة</option>'+d.products.map(x=>`<option value="${esc(x.name)}">${esc(x.name)}</option>`).join('');
+$('debtList').innerHTML=d.debts.length?[...d.debts].reverse().map(x=>{let rem=Math.max(0,(+x.amount||0)-(+x.paid||0));return `<div class="row"><span><b>👤 ${esc(x.name)}</b><br><span class="small">${esc(x.veg||'')} · ${fmt(x.pieces||0)} قطعة · ${money(x.price||0)} للقطعة<br>الدين: ${money(x.amount)} · المسدّد: ${money(x.paid)}<br><span class="money">المتبقي: ${money(rem)}</span> · ${esc(x.date)}</span></span><span style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end"><button class="btn" style="width:auto;margin:0;padding:7px 9px;font-size:12px" onclick="payDebt('${x.id}')">تسديد</button><button class="danger" onclick="delDebt('${x.id}')">حذف</button></span></div>`}).join(''):'<div class="empty">لا توجد ديون بعد.</div>';
+}
+window.payDebt=i=>{let x=d.debts.find(z=>z.id===i);if(!x)return;let rem=Math.max(0,(+x.amount||0)-(+x.paid||0));if(rem<=0){alert('هذا الدين مسدّد بالكامل.');return}let v=prompt('كم مبلغ التسديد؟',String(rem));if(v===null)return;let a=Number(v);if(!Number.isFinite(a)||a<=0||a>rem){alert('أدخل مبلغاً صحيحاً لا يتجاوز المتبقي.');return}x.paid=(+x.paid||0)+a;save();};
+window.delDebt=i=>{if(confirm('حذف هذا الدين؟')){d.debts=d.debts.filter(x=>x.id!==i);save()}};
+
+function render(){
+$('farmer').innerHTML='<option value="">اختار الفلاح</option>'+d.farmers.map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join('');
+$('veg').innerHTML='<option value="">اختار نوع الخضرة</option>'+d.products.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('');
+$('productList').innerHTML=d.products.length?d.products.map(x=>`<div class="row"><span><b>${esc(x.name)}</b><br><span class="small">${money(x.price)} لكل كغم</span></span><button class="danger" onclick="delProduct('${x.id}')">حذف</button></div>`).join(''):'<div class="empty">أضف أنواع الخضرة وأسعارها.</div>';
+$('farmerList').innerHTML=d.farmers.length?d.farmers.map(f=>`<div class="row"><span><b>${esc(f.name)}</b><br><span class="small">${d.sales.filter(s=>s.farmerId===f.id).length} عملية</span></span><button class="danger" onclick="delFarmer('${f.id}')">حذف</button></div>`).join(''):'<div class="empty">أضف أول فلاح.</div>';
+renderDaily();
+renderDebts();
+let ownerTotal=d.sales.reduce((sum,s)=>sum+(s.pieces*50),0);
+let porterTotal=d.sales.reduce((sum,s)=>sum+(s.pieces*200),0);
+let sevenTotal=d.sales.reduce((sum,s)=>sum+calc(s).owner7,0);
+$('ownerShareSummary').innerHTML=`إجمالي حصة صاحب الشغل (50 د.ع لكل قطعة): <strong>${money(ownerTotal)}</strong><br>إجمالي 7% على المجموع كله: <strong>${money(sevenTotal)}</strong><br>حصة صاحب الشغل + 7%: <strong>${money(ownerTotal+sevenTotal)}</strong>`;
+$('porterShareSummary').innerHTML=`إجمالي حصة الحمال: <strong>${money(porterTotal)}</strong>`;
+$('recordList').innerHTML=d.sales.length?[...d.sales].reverse().map(s=>{let f=d.farmers.find(x=>x.id===s.farmerId),c=calc(s);return `<div class="row"><span><b>${esc(f?.name||'غير معروف')} — ${esc(s.veg)}</b><br><span class="small">${s.pieces} قطعة · ${fmt(s.weight)} كغم · ${money(s.price)}/كغم${s.isDebt?`<br>💳 دين باسم: <b>${esc(s.debtBuyer)}</b>`:''}<br>قيمة البضاعة ${money(c.base)} · الفلاح ${money(c.farmer)} · الحمال ${money(c.porter)} · صاحب الشغل ${money(c.owner+c.owner7)} <br><span class="money">المبلغ النهائي من البقال ${money(c.final)}</span> · ${s.date}</span></span><button class="danger" onclick="delSale('${s.id}')">حذف</button></div>`}).join(''):'<div class="empty">لا توجد عمليات بعد.</div>';
+}
+function live(){
+let w=+$('weight').value,p=+$('price').value,n=+$('pieces').value;if(!w||!p||!n){$('calc').innerHTML='أدخل البيانات حتى يظهر الحساب.';return}
+let c=calc({weight:w,price:p,pieces:n});
+$('calc').innerHTML=`سعر الوزن: <strong>${money(c.base)}</strong><br>حصة الفلاح: <strong>${money(c.farmer)}</strong><br>حصة الحمال: <strong>${money(c.porter)}</strong><br>حصة صاحب الشغل: <strong>${money(c.owner)}</strong><br>المجموع قبل 7%: <strong>${money(c.before7)}</strong><br>7%: <strong>${money(c.owner7)}</strong><br><span class="money">المبلغ النهائي: ${money(c.final)}</span>`;
+}
+['weight','price','pieces'].forEach(x=>$(x).addEventListener('input',live));$('veg').addEventListener('change',()=>{let x=d.products.find(p=>p.id===$('veg').value);if(x){$('price').value=x.price;live()}});
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));b.classList.add('on');$(b.dataset.p).classList.add('on');render()});
+$('debtDate').value=new Date().toLocaleDateString('en-CA');
+function liveDebt(){let n=+$('debtPieces').value,p=+$('debtPrice').value;if(!n||p<0){$('debtCalc').textContent='إدخل عدد القطع والسعر حتى يظهر مبلغ الدين.';return}let total=n*p;$('debtCalc').innerHTML=`مبلغ الدين: <strong>${money(total)}</strong>`;}
+['debtPieces','debtPrice'].forEach(x=>$(x).addEventListener('input',liveDebt));
+$('debtForm').onsubmit=e=>{e.preventDefault();let name=$('debtName').value.trim(),veg=$('debtVeg').value,pieces=+$('debtPieces').value,price=+$('debtPrice').value,date=$('debtDate').value,amount=pieces*price;if(!name||!veg||!pieces||price<0){alert('أدخل الاسم والنوع وعدد القطع والسعر');return}d.debts.push({id:id(),name,veg,pieces,price,amount,paid:0,date});e.target.reset();$('debtDate').value=new Date().toLocaleDateString('en-CA');$('debtCalc').textContent='إدخل عدد القطع والسعر حتى يظهر مبلغ الدين.';save();alert('تم حفظ الدين')};
+$('farmerForm').onsubmit=e=>{e.preventDefault();let name=$('fname').value.trim();if(!name)return;if(d.farmers.some(f=>f.name===name)){alert('هذا الفلاح موجود');return}d.farmers.push({id:id(),name});$('fname').value='';save();alert('تم حفظ الفلاح')};
+$('isDebt').onchange=()=>{$('debtBuyerWrap').style.display=$('isDebt').checked?'block':'none';if(!$('isDebt').checked)$('debtBuyer').value=''};
+$('saleForm').onsubmit=e=>{e.preventDefault();let product=d.products.find(x=>x.id===$('veg').value),isDebt=$('isDebt').checked,debtBuyer=$('debtBuyer').value.trim();let s={id:id(),farmerId:$('farmer').value,veg:product?product.name:'',pieces:+$('pieces').value,weight:+$('weight').value,price:+$('price').value,isDebt,debtBuyer,date:new Date().toLocaleDateString('en-CA')};if(!s.farmerId){alert('اختار الفلاح');return}if(isDebt&&!debtBuyer){alert('اكتب اسم صاحب الدين');return}d.sales.push(s);if(isDebt){let c=calc(s);d.debts.push({id:id(),sourceSaleId:s.id,name:debtBuyer,veg:s.veg,pieces:s.pieces,price:s.price,weight:s.weight,amount:c.final,paid:0,date:s.date});}e.target.reset();$('debtBuyerWrap').style.display='none';$('calc').textContent='أدخل البيانات حتى يظهر الحساب.';save();alert(isDebt?'تم حفظ العملية وتسجيل الدين باسم '+debtBuyer:'تم حفظ العملية')};
+window.delSale=i=>{if(confirm('حذف العملية؟')){d.sales=d.sales.filter(s=>s.id!==i);d.debts=d.debts.filter(x=>x.sourceSaleId!==i);save()}};
+window.delFarmer=i=>{if(d.sales.some(s=>s.farmerId===i)){alert('لا يمكن حذف فلاح لديه عمليات.');return}if(confirm('حذف الفلاح؟')){d.farmers=d.farmers.filter(f=>f.id!==i);save()}};
+$('export').onclick=()=>{let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:'application/json'}));a.download='حسابات-الفلاحين-نسخة.json';a.click()};
+$('import').onclick=()=>{let f=$('file').files[0];if(!f)return alert('اختار ملف النسخة');let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.farmers||!x.sales)throw 0;d=x;save();alert('تم الاسترجاع')}catch(e){alert('النسخة غير صالحة')}};r.readAsText(f)};
+$('productForm').onsubmit=e=>{e.preventDefault();let name=$('pname').value.trim(),price=+$('pprice').value;if(!name||price<0)return;let x=d.products.find(p=>p.name===name);if(x)x.price=price;else d.products.push({id:id(),name,price});e.target.reset();save();alert('تم حفظ السعر')};
+window.delProduct=i=>{if(d.sales.some(s=>{let p=d.products.find(x=>x.name===s.veg);return p&&p.id===i})){alert('لا تحذف نوعاً مستخدماً في السجل. غيّر سعره فقط.');return}if(confirm('حذف نوع الخضرة؟')){d.products=d.products.filter(x=>x.id!==i);save()}};
+$('dailyDate').value=new Date().toLocaleDateString('en-CA');$('dailyFarmer').addEventListener('change',renderDaily);$('dailyDate').addEventListener('change',renderDaily);render();renderDaily();
+</script>
+</body></html>
