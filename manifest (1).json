@@ -1,0 +1,13 @@
+{
+  "background_color": "#ffffff",
+  "description": "تطبيق لإدارة مبيعات وحسابات الفلاحين",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "كاتب الكتروني",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "كاتب",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "id": "katib-electronic"
+}
