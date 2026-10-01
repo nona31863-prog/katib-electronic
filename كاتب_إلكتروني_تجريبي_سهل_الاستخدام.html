@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#166534">
+<title>كاتب إلكتروني</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f6f4;color:#172019;font-family:Arial,sans-serif}
+header{background:#166534;color:#fff;padding:18px;text-align:center}header h1{margin:0;font-size:24px}header p{margin:7px 0 0;font-size:13px}
+header{display:none}
+nav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px;background:#fff;position:sticky;top:0;z-index:3;box-shadow:0 2px 8px #0001}
+nav button{
+  border:0;border-radius:12px;min-height:48px;padding:7px 4px;
+  background:#e8efe9;color:#14532d;font-weight:bold;
+  font-size:14px;line-height:1.15;box-shadow:none;
+}
+nav button.on{background:#166534;color:#fff;box-shadow:0 3px 8px #16653433}
+@media(max-width:700px){
+  nav{gap:8px;padding:9px}
+  nav button{min-height:48px;border-radius:12px;font-size:13px}
+}
+@media(max-width:420px){nav{gap:7px;padding:8px}nav button{font-size:12px;min-height:46px}}
+main{max-width:700px;margin:auto;padding:12px}.page{display:none}.page.on{display:block}
+.card{background:#fff;border:1px solid #dce5de;border-radius:14px;padding:15px;margin-bottom:12px}
+h2{font-size:19px;margin:0 0 14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:block;font-size:13px;color:#647168;margin-bottom:5px;font-weight:bold}
+input,select{width:100%;padding:12px;border:1px solid #ccd8cf;border-radius:10px;font-size:16px;background:#fff}
+.full{grid-column:1/-1}.btn{width:100%;border:0;border-radius:10px;background:#166534;color:#fff;padding:13px;font-size:16px;font-weight:bold;margin-top:12px}
+.row{display:flex;justify-content:space-between;gap:8px;align-items:center;border-bottom:1px solid #edf1ed;padding:11px 0}
+.row:last-child{border-bottom:0}.small{font-size:13px;color:#68756d}.money{font-weight:bold;color:#166534}
+.result{background:#f0f7f1;border-radius:12px;padding:13px;margin-top:12px;line-height:1.9}
+.result strong{color:#166534}.empty{text-align:center;color:#777;padding:18px}
+.danger{background:#fff0ee;color:#a52217;border:0;border-radius:8px;padding:7px 9px}
+@media(max-width:420px){nav{grid-template-columns:repeat(3,1fr)}nav button{font-size:12px}.grid{grid-template-columns:1fr}.full{grid-column:auto}}
+.buyer-table,.buyer-table th,.buyer-table td{border:1px solid #222!important;border-collapse:collapse}.buyer-table{width:100%;border:2px solid #222!important}
+
+#farmerListPage .farmer-head{text-align:center;border-bottom:2px solid #166534;padding-bottom:10px;margin-bottom:12px}
+#farmerListPage .farmer-head .market{font-size:21px;font-weight:800;color:#14532d}
+#farmerListPage .farmer-head .title{font-weight:bold;margin-top:4px}
+#farmerListPage .list-table{width:100%;border-collapse:collapse;border:2px solid #222;font-size:13px}
+#farmerListPage .list-table th,#farmerListPage .list-table td{border:1px solid #222;padding:9px 6px;text-align:center}
+#farmerListPage .list-table th{background:#edf5ee;color:#14532d}
+#farmerListPage .farmer-meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+#farmerListPage .total-box{margin-top:12px;background:#edf8ef;border:1px solid #b9d8bf;border-radius:12px;padding:12px;font-size:15px}
+
+.paper-print{font-family:Arial,"Tahoma",sans-serif;direction:rtl;color:#111;background:#fff;max-width:760px;margin:0 auto;padding:8px}
+.paper-head{border:1.8px solid #222;border-radius:14px;padding:10px 14px 8px;text-align:center;margin-bottom:8px}
+.paper-head .market{font-size:25px;font-weight:900;margin-bottom:2px}.paper-head .sub{font-size:15px;font-weight:700;margin-bottom:2px}.paper-head .admin{font-size:13px;font-weight:700}
+.paper-meta{display:grid;grid-template-columns:1fr 1fr;gap:4px 18px;font-size:13px;font-weight:700;margin:6px 4px}.paper-meta div{border-bottom:1px dotted #555;padding:4px 2px;min-height:20px}
+.paper-table{width:100%;border-collapse:collapse;table-layout:fixed;margin-top:6px;font-size:13px}.paper-table th,.paper-table td{border:1.5px solid #222;padding:7px 5px;text-align:center;height:27px}.paper-table th{font-weight:900;background:#fff}.paper-table .amount{width:24%}.paper-table .weight{width:16%}.paper-table .price{width:16%}.paper-table .count{width:14%}.paper-table .type{width:30%}.paper-table tbody tr{height:34px}
+.paper-total{border:1.5px solid #222;margin-top:4px;padding:8px;text-align:right;font-weight:800}.paper-footer{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:7px;font-size:12px;font-weight:700}.paper-footer>div{border-top:1.5px solid #222;padding-top:7px;min-height:28px}.paper-print .no-print{display:block}
+@media print{body{background:#fff!important}.page:not(.on){display:none!important}.paper-print{max-width:none;padding:0;margin:0}.paper-print .no-print{display:none!important}@page{size:A4;margin:10mm}}
+@media print{#farmerListPage .no-print{display:none!important}#farmerListPage .card{box-shadow:none;border:0}}
+</style>
+<style>
+/* تحسين سهولة الاستخدام */
+.card h2{line-height:1.35}
+#sale .card:first-child{border-top:3px solid #166534}
+#sale input,#sale select{min-height:50px}
+#sale .btn{min-height:50px;font-size:17px}
+@media(max-width:420px){main{padding:8px}.card{padding:12px;border-radius:12px}.grid{gap:8px}input,select{padding:11px;font-size:16px}}
+
+</style>
+
+<style>
+#buyerList .buyer-head{
+  background:linear-gradient(135deg,#166534,#14532d);
+  color:#fff;border-radius:16px;padding:18px;margin:-2px -2px 14px;
+  text-align:center;box-shadow:0 5px 16px #0002
+}
+#buyerList .buyer-head .market-name{font-size:21px;font-weight:800;letter-spacing:.2px}
+#buyerList .buyer-head .doc-title{font-size:13px;opacity:.9;margin-top:5px}
+#buyerList .field-card{
+  background:#f7faf7;border:1px solid #dce5de;border-radius:12px;padding:10px
+}
+#buyerList .sales-select{
+  min-height:170px!important;border:1px solid #c9d7cd;border-radius:12px;
+  background:#fff;padding:7px
+}
+#buyerList .buyer-action{margin-top:10px}
+#buyerListResult .print-head{text-align:center;border-bottom:2px solid #166534;padding-bottom:10px;margin-bottom:10px}
+#buyerListResult .print-head .market{font-size:20px;font-weight:800;color:#166534}
+#buyerListResult .print-head .title{font-weight:bold;margin-top:3px}
+#buyerListResult .print-head .doc-subtitle{font-size:13px;margin-top:4px;color:#333}
+@media print{#buyerListResult .list-table{font-size:14px}#buyerListResult .list-table th,#buyerListResult .list-table td{padding:10px 7px;height:28px}#buyerListResult .print-head .market{font-size:24px;color:#222}#buyerListResult .print-head .doc-subtitle{font-size:13px;color:#222}}
+#buyerListResult .buyer-meta{
+  display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;
+  background:#f7faf7;border-radius:10px;padding:10px;margin-bottom:10px
+}
+#buyerListResult .list-table{width:100%;border-collapse:collapse;border:2px solid #222;font-size:13px}
+#buyerListResult .list-table th,#buyerListResult .list-table td{
+  border:1px solid #222!important;padding:9px 5px;text-align:center
+}
+#buyerListResult .list-table th{background:#edf5ee;color:#14532d}
+#buyerListResult .total-box{
+  margin-top:12px;background:#eef8ef;border:1px solid #cfe3d2;border-radius:12px;
+  padding:12px;font-size:15px;line-height:2
+}
+@media print{
+  body{background:#fff!important}
+  nav,body>header{display:none!important}
+  body.print-buyer main>section:not(#buyerList){display:none!important}
+  body.print-buyer #buyerList{display:block!important}
+  body.print-buyer #buyerList>div:first-child{display:none!important}
+  body.print-buyer #buyerListResult{display:block!important;border:0!important;box-shadow:none!important}
+  body.print-farmer main>section:not(#farmerListPage){display:none!important}
+  body.print-farmer #farmerListPage{display:block!important}
+  body.print-farmer #farmerListPage>.no-print{display:none!important}
+  body.print-farmer #farmerListResult{display:block!important;border:0!important;box-shadow:none!important}
+}
+.buyer-table,.buyer-table th,.buyer-table td{border:1px solid #222!important;border-collapse:collapse}.buyer-table{width:100%;border:2px solid #222!important}
+</style>
+</head>
+<body>
+<header><h1>🧾 كاتب إلكتروني</h1><p>سعر الوزن + 250 للفلاح/قطعة + 200 للحمال/قطعة + 50 لصاحب الشغل/قطعة ثم 7% على المجموع</p></header>
+<nav>
+<button class="on" data-p="sale">➕ تسجيل بيع</button>
+<button data-p="farmers">👨‍🌾 الفلاحين</button>
+<button data-p="prices">💰 الأسعار</button>
+<button data-p="records">📋 السجل</button>
+<button data-p="debts">💳 الديون</button>
+<button data-p="daily">📊 يوم الفلاح</button>
+<button data-p="buyerList">🧾 قائمة البقال</button>
+<button data-p="farmerListPage">👨‍🌾 قائمة الفلاح</button>
+<button data-p="accounts">📒 الحسابات</button>
+<button data-p="porterShare">🚚 حصة الحمال</button>
+<button data-p="ownerShare">👷 حصة صاحب الشغل</button>
+<button data-p="backup">💾 النسخة</button>
+</nav>
+<main>
+<section id="sale" class="page on">
+<div class="card">
+<h2>➕ تسجيل عملية بيع</h2><p class="small" style="margin-top:-6px">اختار الفلاح والخضرة، أدخل القطع والوزن والسعر، ثم اضغط حفظ.</p>
+<form id="saleForm">
+<div class="grid">
+<div class="full"><label>اسم الفلاح</label><select id="farmer" required></select></div>
+<div><label>نوع الخضرة</label><select id="veg" required></select></div>
+<div><label>عدد القطع</label><input id="pieces" type="number" min="1" step="1" required></div>
+<div><label>الوزن (كغم)</label><input id="weight" type="number" min="0" step="0.01" required></div>
+<div><label>السعر النهائي من البقال (د.ع/كغم)</label><input id="price" type="number" min="0" step="1" required></div>
+<div class="full"><label><input id="isDebt" type="checkbox" style="width:auto;margin-left:6px"> بيع بالدين</label><div id="debtBuyerWrap" style="display:none;margin-top:6px"><input id="debtBuyer" placeholder="اسم صاحب الدين"></div></div>
+</div>
+<div class="result" id="calc">أدخل البيانات حتى يظهر الحساب.</div>
+<button class="btn">حفظ العملية</button>
+</form>
+</div>
+
+</div>
+</section>
+
+<section id="farmers" class="page">
+<div class="card"><h2>إضافة فلاح</h2>
+<form id="farmerForm"><label>اسم الفلاح</label><input id="fname" required placeholder="اكتب الاسم"><button class="btn">حفظ الفلاح</button></form></div>
+<div class="card"><h2>الفلاحين</h2><div id="farmerList"></div></div>
+</section>
+
+<section id="records" class="page">
+<div class="card"><h2>السجل</h2><div id="recordList"></div></div>
+</section>
+
+<section id="prices" class="page">
+<div class="card"><h2>أسعار الخضرة</h2>
+<p class="small">هنا تحدد السعر المعتاد لكل نوع. عند اختيار الخضرة في تسجيل البيع، يظهر سعرها تلقائياً. وإذا تغير السعر، عدّله هنا، والعمليات القديمة تبقى محفوظة بسعرها القديم.</p>
+<form id="productForm"><div class="grid">
+<div><label>نوع الخضرة</label><input id="pname" required placeholder="مثلاً خيار"></div>
+<div><label>السعر النهائي للبقال (د.ع/كغم)</label><input id="pprice" type="number" min="0" required placeholder="500"></div>
+</div><button class="btn">إضافة / حفظ السعر</button></form>
+</div>
+<div class="card"><div id="productList"></div></div>
+</section>
+
+<section id="daily" class="page">
+<div class="card"><h2>حساب الفلاح اليومي</h2>
+<p class="small">اختار الفلاح والتاريخ حتى تشوف كل نوع خضرة وحده، مع مجموع الوزن والقطع والحساب.</p>
+<div class="grid">
+<div><label>الفلاح</label><select id="dailyFarmer"></select></div>
+<div><label>التاريخ</label><input id="dailyDate" type="date"></div>
+</div>
+<div id="dailySummary" style="margin-top:12px"></div>
+</div>
+</section>
+
+<section id="backup" class="page">
+<div class="card"><h2>نسخة احتياطية</h2><p class="small">احفظ نسخة حتى لا تضيع البيانات إذا تغير الجهاز.</p><button class="btn" id="export">تنزيل النسخة</button></div>
+<div class="card"><h2>استرجاع</h2><input type="file" id="file" accept=".json"><button class="btn" id="import">استرجاع النسخة</button></div>
+</section>
+<section id="ownerShare" class="page">
+<div class="card"><h2>👷 حصة صاحب الشغل</h2>
+<div class="result" id="ownerShareSummary">لا توجد عمليات بعد.</div>
+</div>
+</section>
+<section id="porterShare" class="page">
+<div class="card"><h2>🚚 حصة الحمال</h2>
+<div class="result" id="porterShareSummary">لا توجد عمليات بعد.</div>
+</div>
+</section>
+
+<section id="debts" class="page">
+<div class="card"><h2>💳 تسجيل دين</h2>
+<form id="debtForm"><div class="grid">
+<div class="full"><label>اسم الشخص</label><input id="debtName" required placeholder="اكتب الاسم"></div>
+<div><label>نوع الخضرة</label><select id="debtVeg" required></select></div>
+<div><label>عدد القطع</label><input id="debtPieces" type="number" min="1" step="1" required placeholder="مثلاً 10"></div>
+<div><label>السعر للقطعة (د.ع)</label><input id="debtPrice" type="number" min="0" step="1" required placeholder="مثلاً 1000"></div>
+<div class="full"><div class="result" id="debtCalc">إدخل عدد القطع والسعر حتى يظهر مبلغ الدين.</div></div>
+<div><label>تاريخ الدين</label><input id="debtDate" type="date" required></div>
+</div><button class="btn">حفظ الدين</button></form></div>
+<div class="card"><h2>مجموع الديون</h2><div class="result" id="debtSummary"></div></div>
+<div class="card"><h2>قائمة الديون</h2><input id="debtSearch" type="search" placeholder="🔎 ابحث باسم الشخص أو نوع الخضرة أو التاريخ" style="margin-bottom:10px"><div id="debtList"></div></div>
+</section>
+
+
+<section id="buyerList" class="page">
+  <div class="card">
+    <div class="buyer-head">
+      <div class="market-name">اسم العلوة</div>
+      <div class="doc-title">قائمة مشتريات البقال</div>
+    </div>
+    <div class="full field-card">
+      <label>اسم العلوة</label>
+      <input id="auctionName" placeholder="اكتب اسم العلوة" value="">
+      <div class="small" style="margin-top:6px">ثابت ومحفوظ، وتكدر تغيّره بأي وقت.</div>
+    </div>
+    <div class="grid">
+      <div class="field-card"><label>بإدارة</label><input id="adminName" placeholder="اسم الإدارة"></div>
+      <div class="field-card"><label>رقم المكتب</label><input id="officeNumber" placeholder="رقم المكتب"></div>
+    </div>
+    <div class="grid">
+      <div class="full field-card">
+        <label>اسم البقال</label>
+        <input id="buyerName" placeholder="اكتب اسم البقال">
+      </div>
+      <div class="full field-card">
+        <label>العنوان (اختياري)</label>
+        <input id="buyerAddress" placeholder="اكتب العنوان إذا تريد، أو اتركه فارغاً">
+      </div>
+      <div class="full field-card">
+        <label>اختيار العمليات</label>
+        <select id="buyerSales" class="sales-select" multiple></select>
+        <div class="small" style="margin-top:7px">اختار كل الأصناف المطلوبة للقائمة.</div>
+      </div>
+    </div>
+    <button class="btn buyer-action" id="makeBuyerList">إنشاء القائمة</button>
+  </div>
+  <div class="card" id="buyerListResult">
+    <div class="empty">اختار العمليات واضغط إنشاء القائمة.</div>
+  </div>
+</section>
+
+<section id="accounts" class="page">
+  <div class="card">
+    <h2>📒 الحسابات العامة</h2>
+    <p class="small">هنا تجمع كل حسابات العلوة: مبيعات الفلاحين، مستحقات كل فلاح، الديون، الواردات، والمصاريف.</p>
+    <div class="grid">
+      <div class="full field-card"><label>الفلاح</label><select id="accountFarmer"></select></div>
+      <div><label>من تاريخ</label><input id="accountFrom" type="date"></div>
+      <div><label>إلى تاريخ</label><input id="accountTo" type="date"></div>
+    </div>
+    <button class="btn" id="refreshAccounts">تحديث الحساب</button>
+  </div>
+
+  <div class="card">
+    <h2>➕ إضافة وارد / إيراد</h2>
+    <form id="incomeForm">
+      <div class="grid">
+        <div><label>البيان</label><input id="incomeDesc" required placeholder="مثلاً: أجور خدمة"></div>
+        <div><label>المبلغ (د.ع)</label><input id="incomeAmount" type="number" min="0" required></div>
+        <div><label>التاريخ</label><input id="incomeDate" type="date" required></div>
+        <div><label>ملاحظة</label><input id="incomeNote" placeholder="اختياري"></div>
+      </div>
+      <button class="btn">حفظ الوارد</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>➖ إضافة مصروف العلوة</h2>
+    <form id="expenseForm">
+      <div class="grid">
+        <div><label>البيان</label><input id="expenseDesc" required placeholder="مثلاً: كهرباء / تنظيف / نقل"></div>
+        <div><label>المبلغ (د.ع)</label><input id="expenseAmount" type="number" min="0" required></div>
+        <div><label>التاريخ</label><input id="expenseDate" type="date" required></div>
+        <div><label>ملاحظة</label><input id="expenseNote" placeholder="اختياري"></div>
+      </div>
+      <button class="btn">حفظ المصروف</button>
+    </form>
+  </div>
+
+  <div class="card"><h2>📊 ملخص الحساب</h2><div id="accountsSummary"></div></div>
+  <div class="card"><h2>👨‍🌾 حساب الفلاح</h2><div id="farmerAccountSummary"></div></div>
+  <div class="card"><h2>💳 الديون</h2><div id="accountsDebtSummary"></div></div>
+  <div class="card"><h2>📋 الواردات والمصاريف</h2><div id="cashList"></div></div>
+</section>
+
+<section id="farmerListPage" class="page">
+  <div class="card no-print">
+    <div class="farmer-head">
+      <div class="market" id="farmerAuctionHead">اسم العلوة</div>
+      <div class="title">قائمة الفلاح</div>
+    </div>
+    <div class="grid">
+      <div class="field-card"><label>بإدارة</label><input id="adminNameFarmer" placeholder="اسم الإدارة"></div>
+      <div class="field-card"><label>رقم المكتب</label><input id="officeNumberFarmer" placeholder="رقم المكتب"></div>
+    </div>
+    <div class="full field-card">
+      <label>اسم الفلاح</label>
+      <select id="farmerListFarmer"></select>
+    </div>
+    <div class="full field-card">
+      <label>العنوان (اختياري)</label>
+      <input id="farmerAddress" placeholder="اكتب العنوان إذا تريد، أو اتركه فارغاً">
+    </div>
+    <div class="full field-card">
+      <label>اختيار العمليات</label>
+      <select id="farmerSales" class="sales-select" multiple></select>
+      <div class="small" style="margin-top:7px">اختار الأصناف التي تريدها بقائمة الفلاح.</div>
+    </div>
+    <button class="btn buyer-action" id="makeFarmerList">إنشاء القائمة</button>
+  </div>
+  <div class="card" id="farmerListResult"><div class="empty">اختار الفلاح والعمليات واضغط إنشاء القائمة.</div></div>
+</section>
+
+</main>
+<script>
+
+const KEY='falah_simple_v2';
+let d={farmers:[],sales:[],debts:[],incomes:[],expenses:[],products:[{id:'tomato',name:'طماطة',price:500},{id:'pepper',name:'فلفل',price:500}],auctionName:'',adminName:'شامل ابو علي',officeNumber:'98'};
+try{d=JSON.parse(localStorage.getItem(KEY))||d;if(!d.products)d.products=[];if(!d.debts)d.debts=[];if(!d.incomes)d.incomes=[];if(!d.expenses)d.expenses=[];if(typeof d.auctionName!=='string')d.auctionName='';if(typeof d.adminName!=='string')d.adminName='شامل ابو علي';if(typeof d.officeNumber!=='string')d.officeNumber='98';d.debts=d.debts.map(x=>({...x,paid:+(x.paid||0)}))}catch(e){}
+const $=x=>document.getElementById(x);
+const fmt=n=>Number(n||0).toLocaleString('en-US',{maximumFractionDigits:2});
+const money=n=>fmt(n)+' د.ع';
+const id=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
+const esc=s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
+function calc(s){
+  let base=Number(s.weight||0)*Number(s.price||0);
+  let farmer=Number(s.pieces||0)*250;
+  let porter=Number(s.pieces||0)*200;
+  let owner=Number(s.pieces||0)*50;
+  let before7=base+500;
+  let owner7=before7*.07;
+  let final=before7+owner7;
+  return {base,farmer,porter,owner,owner7,before7,final};
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(d));render()}
+function renderDaily(){
+let oldFid=$('dailyFarmer').value;
+$('dailyFarmer').innerHTML='<option value="">اختار الفلاح</option>'+d.farmers.map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join('');
+if(oldFid) $('dailyFarmer').value=oldFid;
+let fid=$('dailyFarmer').value,date=$('dailyDate').value;
+if(!fid){$('dailySummary').innerHTML='<div class="empty">اختار الفلاح.</div>';return}
+let rows=d.sales.filter(s=>s.farmerId===fid&&s.date===date);
+if(!rows.length){$('dailySummary').innerHTML='<div class="empty">ماكو مبيعات لهذا الفلاح بهذا اليوم.</div>';return}
+let groups={};
+rows.forEach(s=>{let k=s.veg;if(!groups[k])groups[k]={veg:k,pieces:0,weight:0,base:0,farmer:0,porter:0,owner:0,owner7:0,before7:0,final:0};let g=groups[k],c=calc(s);g.pieces+=s.pieces;g.weight+=s.weight;g.base+=c.base;g.farmer+=c.farmer;g.porter+=c.porter;g.owner+=c.owner;g.owner7+=c.owner7;g.before7+=c.before7;g.final+=c.final});
+let total={pieces:0,weight:0,farmerNet:0};
+Object.values(groups).forEach(g=>{total.pieces+=g.pieces;total.weight+=g.weight;total.farmerNet+=g.base+g.farmer});
+$('dailySummary').innerHTML=Object.values(groups).map(g=>`<div class="card" style="margin-top:10px">
+<h3 style="margin:0 0 10px">🥬 ${esc(g.veg)}</h3>
+<div class="small">عدد القطع: <b>${fmt(g.pieces)}</b> &nbsp; | &nbsp; الوزن: <b>${fmt(g.weight)} كغم</b></div>
+<div class="result" style="margin-top:10px">
+<div style="padding:10px;background:#f7faf7;border-radius:10px;margin-bottom:8px">💰 <b>سعر الوزن</b><br>${fmt(g.weight)} كغم × سعر الكيلو = <strong>${money(g.base)}</strong></div>
+<div style="padding:10px;background:#f7faf7;border-radius:10px;margin-bottom:8px">👨‍🌾 <b>الفلاح</b><br>250 د.ع × ${fmt(g.pieces)} قطعة = <strong>${money(g.farmer)}</strong></div>
+<div style="border-top:1px solid #dce5de;margin-top:8px;padding-top:8px"><b>صافي مستحق الفلاح</b> = <strong>${money(g.base+g.farmer)}</strong></div>
+</div></div>`).join('')+`<div class="result"><b>مجموع اليوم</b><br>القطع: <strong>${fmt(total.pieces)}</strong> · الوزن: <strong>${fmt(total.weight)} كغم</strong><br>صافي مستحق الفلاح: <strong>${money(total.farmerNet)}</strong></div>`;
+}
+
+function renderDebts(){
+let total=d.debts.reduce((sum,x)=>sum+(+x.amount||0),0);
+let paid=d.debts.reduce((sum,x)=>sum+(+x.paid||0),0);
+let remaining=total-paid;
+$('debtSummary').innerHTML=`إجمالي الدين: <strong>${money(total)}</strong><br>المسدّد: <strong>${money(paid)}</strong><br>المتبقي: <strong>${money(remaining)}</strong>`;
+$('debtVeg').innerHTML='<option value="">اختار نوع الخضرة</option>'+d.products.map(x=>`<option value="${esc(x.name)}">${esc(x.name)}</option>`).join('');
+let q=($('debtSearch')?.value||'').trim().toLowerCase();let list=d.debts.filter(x=>!q||[x.name,x.veg,x.date].some(v=>String(v||'').toLowerCase().includes(q)));$('debtList').innerHTML=list.length?[...list].reverse().map(x=>{let rem=Math.max(0,(+x.amount||0)-(+x.paid||0));return `<div class="row"><span><b>👤 ${esc(x.name)}</b><br><span class="small">${esc(x.veg||'')} · ${fmt(x.pieces||0)} قطعة · ${money(x.price||0)} للقطعة<br>الدين: ${money(x.amount)} · المسدّد: ${money(x.paid)}<br><span class="money">المتبقي: ${money(rem)}</span> · ${esc(x.date)}</span></span><span style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end"><button class="btn" style="width:auto;margin:0;padding:7px 9px;font-size:12px" onclick="printDebt('${x.id}')">🧾 وصل</button><button class="btn" style="width:auto;margin:0;padding:7px 9px;font-size:12px" onclick="payDebt('${x.id}')">تسديد</button><button class="danger" onclick="delDebt('${x.id}')">حذف</button></span></div>`}).join(''):'<div class="empty">لا توجد نتائج.</div>';
+}
+window.printDebt=i=>{
+  let x=d.debts.find(z=>z.id===i); if(!x)return;
+  let rem=Math.max(0,(+x.amount||0)-(+x.paid||0));
+  let w=window.open('','_blank');
+  if(!w){alert('السماح بفتح نافذة الطباعة مطلوب.');return}
+  let market=d.auctionName||'اسم العلوة';
+  let admin=d.adminName||''; let office=d.officeNumber||'';
+  w.document.write(`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>وصل دين</title><style>body{font-family:Arial,sans-serif;background:#fff;color:#111;margin:0;padding:20px}.receipt{max-width:680px;margin:auto;border:2px solid #222;border-radius:12px;padding:20px}.head{text-align:center;border-bottom:2px solid #222;padding-bottom:12px;margin-bottom:14px}.market{font-size:25px;font-weight:900}.sub{font-size:16px;font-weight:700;margin-top:5px}.meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.meta div{border-bottom:1px dotted #555;padding:8px}.title{text-align:center;font-size:22px;font-weight:900;margin:14px 0}.info{border:1.5px solid #222;border-radius:8px;overflow:hidden}.row{display:flex;border-bottom:1px solid #222}.row:last-child{border-bottom:0}.lab{width:38%;font-weight:bold;background:#f3f3f3;padding:10px;border-left:1px solid #222}.val{width:62%;padding:10px}.total{margin-top:14px;border:2px solid #222;padding:13px;font-size:20px;font-weight:900;text-align:center}.sign{margin-top:35px;display:flex;justify-content:space-between}.no-print{margin-top:18px;text-align:center}button{background:#166534;color:#fff;border:0;border-radius:8px;padding:12px 24px;font-size:16px;font-weight:bold}@media print{body{padding:0}.receipt{border:0}.no-print{display:none!important}@page{size:A5;margin:10mm}}</style></head><body><div class="receipt"><div class="head"><div class="market">${esc(market)}</div><div class="sub">${esc(admin)} ${office?` · رقم المكتب: ${esc(office)}`:''}</div></div><div class="title">🧾 وصل دين</div><div class="meta"><div><b>اسم صاحب الدين:</b> ${esc(x.name||'')}</div><div><b>تاريخ الدين:</b> ${esc(x.date||'')}</div></div><div class="info"><div class="row"><div class="lab">نوع الخضرة</div><div class="val">${esc(x.veg||'')}</div></div><div class="row"><div class="lab">عدد القطع</div><div class="val">${fmt(x.pieces||0)}</div></div><div class="row"><div class="lab">السعر</div><div class="val">${money(x.price||0)}</div></div><div class="row"><div class="lab">مبلغ الدين</div><div class="val">${money(x.amount||0)}</div></div><div class="row"><div class="lab">المسدّد</div><div class="val">${money(x.paid||0)}</div></div><div class="row"><div class="lab">المتبقي</div><div class="val">${money(rem)}</div></div></div><div class="total">المبلغ المتبقي: ${money(rem)}</div><div class="sign"><span>توقيع صاحب الدين: __________</span><span>توقيع المكتب: __________</span></div><div class="no-print"><button onclick="window.print()">🖨️ طباعة الوصل</button></div></div></body></html>`);
+  w.document.close(); w.focus(); setTimeout(()=>w.print(),300);
+};
+window.payDebt=i=>{let x=d.debts.find(z=>z.id===i);if(!x)return;let rem=Math.max(0,(+x.amount||0)-(+x.paid||0));if(rem<=0){alert('هذا الدين مسدّد بالكامل.');return}let v=prompt('كم مبلغ التسديد؟',String(rem));if(v===null)return;let a=Number(v);if(!Number.isFinite(a)||a<=0||a>rem){alert('أدخل مبلغاً صحيحاً لا يتجاوز المتبقي.');return}x.paid=(+x.paid||0)+a;save();};
+window.delDebt=i=>{if(confirm('حذف هذا الدين؟')){d.debts=d.debts.filter(x=>x.id!==i);save()}};
+
+let openRecordFarmerId='';
+let openRecordVeg='';
+function renderRecords(){
+  let el=$('recordList');
+  if(!el)return;
+  if(!d.sales.length){el.innerHTML='<div class="empty">لا توجد عمليات بعد.</div>';return}
+  let farmerIds=[...new Set(d.sales.map(s=>s.farmerId))];
+  if(openRecordFarmerId && !farmerIds.includes(openRecordFarmerId)) openRecordFarmerId='';
+  if(!openRecordFarmerId){
+    el.innerHTML=farmerIds.map(fid=>{
+      let f=d.farmers.find(x=>x.id===fid), sales=d.sales.filter(s=>s.farmerId===fid);
+      let pieces=sales.reduce((a,s)=>a+(+s.pieces||0),0), weight=sales.reduce((a,s)=>a+(+s.weight||0),0);
+      return `<div class="card" style="margin-top:12px;border:1px solid #dce5de;cursor:pointer" onclick="openFarmerRecord('${fid}')">
+        <h3 style="margin:0 0 8px;color:#176b3a">👨‍🌾 ${esc(f?.name||'غير معروف')}</h3>
+        <div class="small">عدد العمليات: <b>${sales.length}</b> · القطع: <b>${fmt(pieces)}</b> · الوزن: <b>${fmt(weight)} كغم</b></div>
+        <button class="btn" style="margin-top:10px">فتح سجل الفلاح ⬅️</button>
+      </div>`;
+    }).join('');
+    return;
+  }
+  let f=d.farmers.find(x=>x.id===openRecordFarmerId), sales=d.sales.filter(s=>s.farmerId===openRecordFarmerId);
+  let vegs=[...new Set(sales.map(s=>s.veg))];
+  let totalPieces=sales.reduce((a,s)=>a+(+s.pieces||0),0), totalWeight=sales.reduce((a,s)=>a+(+s.weight||0),0), totalFinal=sales.reduce((a,s)=>a+calc(s).final,0);
+  let html=`<div class="card" style="border:1px solid #dce5de"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" style="width:auto;padding:8px 14px;margin:0" onclick="closeFarmerRecord()">⬅️ رجوع للفلاحين</button><button class="danger" style="width:auto;margin:0;padding:8px 14px" onclick="clearFarmerRecord('${openRecordFarmerId}')">🗑️ حذف سجل الفلاح</button></div><h2 style="margin:12px 0 8px;color:#176b3a">👨‍🌾 سجل: ${esc(f?.name||'غير معروف')}</h2><div class="result">العمليات: <b>${sales.length}</b> · القطع: <b>${fmt(totalPieces)}</b> · الوزن: <b>${fmt(totalWeight)} كغم</b> · الإجمالي: <b>${money(totalFinal)}</b></div></div>`;
+  html+=vegs.map(veg=>{
+    let rs=sales.filter(s=>s.veg===veg), pieces=rs.reduce((a,s)=>a+(+s.pieces||0),0), weight=rs.reduce((a,s)=>a+(+s.weight||0),0), final=rs.reduce((a,s)=>a+calc(s).final,0);
+    let priceGroups={};
+    rs.forEach(s=>{let pr=Number(s.price||0);if(!priceGroups[pr])priceGroups[pr]={pieces:0,weight:0,final:0};priceGroups[pr].pieces+=Number(s.pieces||0);priceGroups[pr].weight+=Number(s.weight||0);priceGroups[pr].final+=calc(s).final;});
+    let priceSummary=Object.entries(priceGroups).sort((a,b)=>Number(a[0])-Number(b[0])).map(([pr,g])=>`<div style="padding:7px 0;border-top:1px solid #e5ebe7"><b>السعر: ${money(pr)}/كغم</b> · القطع: <b>${fmt(g.pieces)}</b> · الوزن: <b>${fmt(g.weight)} كغم</b> · المبلغ: <b>${money(g.final)}</b></div>`).join('');
+    let open=openRecordVeg===veg;
+    return `<div class="card" style="margin-top:10px;border:1px solid #dce5de;cursor:pointer" onclick="toggleRecordVeg(${JSON.stringify(veg)})">
+      <h3 style="margin:0 0 8px;color:#176b3a">🥬 ${esc(veg)}</h3><div class="small">عدد القطع: <b>${fmt(pieces)}</b> · الوزن: <b>${fmt(weight)} كغم</b> · المجموع: <b>${money(final)}</b></div>
+      <div style="margin-top:8px" onclick="event.stopPropagation()">${priceSummary}</div>
+      ${open?`<div style="margin-top:10px" onclick="event.stopPropagation()">${[...rs].reverse().map(s=>{let c=calc(s);return `<div class="row"><span><b>${esc(s.date)}</b><br><span class="small">${fmt(s.pieces)} قطعة · ${fmt(s.weight)} كغم · ${money(s.price)}/كغم<br>قيمة البضاعة ${money(c.base)} · الفلاح ${money(c.farmer)} · الحمال ${money(c.porter)} · صاحب الشغل ${money(c.owner+c.owner7)}<br><span class="money">المبلغ النهائي ${money(c.final)}</span>${s.isDebt?`<br>💳 دين باسم: <b>${esc(s.debtBuyer)}</b>`:''}</span></span><button class="danger" onclick="delSale('${s.id}')">حذف</button></div>`}).join('')}</div>`:''}
+    </div>`;
+  }).join('');
+  el.innerHTML=html;
+}
+window.openFarmerRecord=fid=>{openRecordFarmerId=fid;openRecordVeg='';renderRecords()};
+window.closeFarmerRecord=()=>{openRecordFarmerId='';openRecordVeg='';renderRecords()};
+window.clearFarmerRecord=fid=>{let f=d.farmers.find(x=>x.id===fid);if(!f)return;if(!confirm('حذف سجل '+f.name+' بالكامل؟\nسيتم حذف كل مبيعاته والديون المرتبطة بها، لكن اسم الفلاح يبقى محفوظاً.'))return;let ids=d.sales.filter(s=>s.farmerId===fid).map(s=>s.id);d.sales=d.sales.filter(s=>s.farmerId!==fid);d.debts=d.debts.filter(x=>!ids.includes(x.sourceSaleId));openRecordFarmerId='';openRecordVeg='';save();alert('تم حذف سجل الفلاح وبقي اسم الفلاح محفوظاً.');};
+window.toggleRecordVeg=veg=>{openRecordVeg=openRecordVeg===veg?'':veg;renderRecords()};
+
+function inDateRange(date,from,to){return (!from||date>=from)&&(!to||date<=to)}
+function renderAccounts(){
+  let sel=$('accountFarmer'); if(!sel)return;
+  let old=sel.value;
+  sel.innerHTML='<option value="">كل الفلاحين</option>'+d.farmers.map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join('');
+  if(old)sel.value=old;
+  let fid=sel.value, from=$('accountFrom').value, to=$('accountTo').value;
+  let sales=d.sales.filter(s=>(!fid||s.farmerId===fid)&&inDateRange(s.date,from,to));
+  let incomes=d.incomes.filter(x=>inDateRange(x.date,from,to));
+  let expenses=d.expenses.filter(x=>inDateRange(x.date,from,to));
+  let salesFinal=sales.reduce((a,s)=>a+calc(s).final,0);
+  let farmerDue=sales.reduce((a,s)=>{let c=calc(s);return a+c.base+c.farmer},0);
+  let porter=sales.reduce((a,s)=>a+calc(s).porter,0);
+  let owner=sales.reduce((a,s)=>a+calc(s).owner+calc(s).owner7,0);
+  let manualIn=incomes.reduce((a,x)=>a+(+x.amount||0),0), exp=expenses.reduce((a,x)=>a+(+x.amount||0),0);
+  let debtAll=d.debts.filter(x=>inDateRange(x.date,from,to)&&(!fid||d.sales.some(s=>s.id===x.sourceSaleId&&s.farmerId===fid) || !x.sourceSaleId));
+  let debtTotal=debtAll.reduce((a,x)=>a+(+x.amount||0),0), debtPaid=debtAll.reduce((a,x)=>a+(+x.paid||0),0);
+  $('accountsSummary').innerHTML=`<div class="result"><div>إجمالي مبيعات البقال: <strong>${money(salesFinal)}</strong></div><div>مستحقات الفلاحين: <strong>${money(farmerDue)}</strong></div><div>حصة الحمال: <strong>${money(porter)}</strong></div><div>حصة صاحب الشغل + 7%: <strong>${money(owner)}</strong></div><div>الواردات الأخرى: <strong>${money(manualIn)}</strong></div><div>مصاريف العلوة: <strong>${money(exp)}</strong></div><hr><div><b>صافي الحركة النقدية</b>: <strong>${money(salesFinal+manualIn-exp)}</strong></div></div>`;
+  if(fid){let f=d.farmers.find(x=>x.id===fid);let byVeg={};sales.forEach(s=>{let c=calc(s);if(!byVeg[s.veg])byVeg[s.veg]={pieces:0,weight:0,due:0,total:0};byVeg[s.veg].pieces+=s.pieces;byVeg[s.veg].weight+=s.weight;byVeg[s.veg].due+=c.base+c.farmer;byVeg[s.veg].total+=c.final});$('farmerAccountSummary').innerHTML=`<div class="result"><b>👨‍🌾 ${esc(f?.name||'')}</b><br>عدد العمليات: <strong>${sales.length}</strong><br>مجموع القطع: <strong>${fmt(sales.reduce((a,s)=>a+s.pieces,0))}</strong><br>مجموع الوزن: <strong>${fmt(sales.reduce((a,s)=>a+s.weight,0))} كغم</strong><br>صافي مستحق الفلاح: <strong>${money(farmerDue)}</strong></div>`+Object.entries(byVeg).map(([v,g])=>`<div class="row"><span><b>🥬 ${esc(v)}</b><br><span class="small">${fmt(g.pieces)} قطعة · ${fmt(g.weight)} كغم · مستحق الفلاح ${money(g.due)}</span></span><span class="money">${money(g.total)}</span></div>`).join('');}
+  else $('farmerAccountSummary').innerHTML='<div class="empty">اختار فلاح حتى تشوف حسابه بالتفصيل.</div>';
+  $('accountsDebtSummary').innerHTML=`إجمالي الدين: <strong>${money(debtTotal)}</strong><br>المسدّد: <strong>${money(debtPaid)}</strong><br>المتبقي: <strong>${money(Math.max(0,debtTotal-debtPaid))}</strong>`;
+  let cash=[...incomes.map(x=>({...x,type:'وارد'})),...expenses.map(x=>({...x,type:'مصروف'}))].filter(x=>inDateRange(x.date,from,to)).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  $('cashList').innerHTML=cash.length?cash.map(x=>`<div class="row"><span><b>${x.type==='وارد'?'🟢':'🔴'} ${esc(x.desc)}</b><br><span class="small">${esc(x.date)}${x.note?' · '+esc(x.note):''}</span></span><span class="money">${x.type==='وارد'?'+':'-'} ${money(x.amount)}</span></div>`).join(''):'<div class="empty">ماكو واردات أو مصاريف مسجلة ضمن الفترة.</div>';
+}
+function render(){
+let oldFarmer=$('farmer')?.value||'';
+let oldVeg=$('veg')?.value||'';
+$('farmer').innerHTML='<option value="">اختار الفلاح</option>'+d.farmers.map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join('');
+$('veg').innerHTML='<option value="">اختار نوع الخضرة</option>'+d.products.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('');
+if(oldFarmer && d.farmers.some(f=>f.id===oldFarmer)) $('farmer').value=oldFarmer;
+if(oldVeg && d.products.some(x=>x.id===oldVeg)) $('veg').value=oldVeg;
+$('productList').innerHTML=d.products.length?d.products.map(x=>`<div class="row"><span><b>${esc(x.name)}</b><br><span class="small">${money(x.price)} لكل كغم</span></span><button class="danger" onclick="delProduct('${x.id}')">حذف</button></div>`).join(''):'<div class="empty">أضف أنواع الخضرة وأسعارها.</div>';
+$('farmerList').innerHTML=d.farmers.length?d.farmers.map(f=>`<div class="row"><span><b>${esc(f.name)}</b><br><span class="small">${d.sales.filter(s=>s.farmerId===f.id).length} عملية</span></span><button class="danger" onclick="delFarmer('${f.id}')">حذف</button></div>`).join(''):'<div class="empty">أضف أول فلاح.</div>';
+renderDaily();
+renderDebts();
+renderBuyerSales();
+let ownerTotal=d.sales.reduce((sum,s)=>sum+(s.pieces*50),0);
+let porterTotal=d.sales.reduce((sum,s)=>sum+(s.pieces*200),0);
+let sevenTotal=d.sales.reduce((sum,s)=>sum+calc(s).owner7,0);
+$('ownerShareSummary').innerHTML=`إجمالي حصة صاحب الشغل (50 د.ع لكل قطعة): <strong>${money(ownerTotal)}</strong><br>إجمالي 7% على المجموع كله: <strong>${money(sevenTotal)}</strong><br>حصة صاحب الشغل + 7%: <strong>${money(ownerTotal+sevenTotal)}</strong>`;
+$('porterShareSummary').innerHTML=`إجمالي حصة الحمال: <strong>${money(porterTotal)}</strong>`;
+renderRecords();
+renderAccounts();
+}
+function live(){
+let w=+$('weight').value,p=+$('price').value,n=+$('pieces').value;if(!w||!p||!n){$('calc').innerHTML='أدخل البيانات حتى يظهر الحساب.';return}
+let c=calc({weight:w,price:p,pieces:n});
+$('calc').innerHTML=`<span class="money">المبلغ النهائي: ${money(c.final)}</span>`;
+}
+['weight','price','pieces'].forEach(x=>$(x).addEventListener('input',live));$('veg').addEventListener('change',()=>{let x=d.products.find(p=>p.id===$('veg').value);if(x){$('price').value=x.price;live()}});
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));b.classList.add('on');$(b.dataset.p).classList.add('on');render()});
+$('debtDate').value=new Date().toLocaleDateString('en-CA');$('debtSearch').addEventListener('input',renderDebts);
+function liveDebt(){let n=+$('debtPieces').value,p=+$('debtPrice').value;if(!n||p<0){$('debtCalc').textContent='إدخل عدد القطع والسعر حتى يظهر مبلغ الدين.';return}let total=n*p;$('debtCalc').innerHTML=`مبلغ الدين: <strong>${money(total)}</strong>`;}
+['debtPieces','debtPrice'].forEach(x=>$(x).addEventListener('input',liveDebt));
+$('debtForm').onsubmit=e=>{e.preventDefault();let name=$('debtName').value.trim(),veg=$('debtVeg').value,pieces=+$('debtPieces').value,price=+$('debtPrice').value,date=$('debtDate').value,amount=pieces*price;if(!name||!veg||!pieces||price<0){alert('أدخل الاسم والنوع وعدد القطع والسعر');return}d.debts.push({id:id(),name,veg,pieces,price,amount,paid:0,date});e.target.reset();$('debtDate').value=new Date().toLocaleDateString('en-CA');$('debtSearch').addEventListener('input',renderDebts);$('debtCalc').textContent='إدخل عدد القطع والسعر حتى يظهر مبلغ الدين.';save();alert('تم حفظ الدين')};
+$('farmerForm').onsubmit=e=>{e.preventDefault();let name=$('fname').value.trim();if(!name)return;if(d.farmers.some(f=>f.name===name)){alert('هذا الفلاح موجود');return}d.farmers.push({id:id(),name});$('fname').value='';save();alert('تم حفظ الفلاح')};
+$('isDebt').onchange=()=>{$('debtBuyerWrap').style.display=$('isDebt').checked?'block':'none';if(!$('isDebt').checked)$('debtBuyer').value=''};
+$('saleForm').onsubmit=e=>{e.preventDefault();let product=d.products.find(x=>x.id===$('veg').value),isDebt=$('isDebt').checked,debtBuyer=$('debtBuyer').value.trim();let s={id:id(),farmerId:$('farmer').value,veg:product?product.name:'',pieces:+$('pieces').value,weight:+$('weight').value,price:+$('price').value,isDebt,debtBuyer,date:new Date().toLocaleDateString('en-CA')};if(!s.farmerId){alert('اختار الفلاح');return}if(isDebt&&!debtBuyer){alert('اكتب اسم صاحب الدين');return}d.sales.push(s);if(isDebt){let c=calc(s);d.debts.push({id:id(),sourceSaleId:s.id,name:debtBuyer,veg:s.veg,pieces:s.pieces,price:s.price,weight:s.weight,amount:c.final,paid:0,date:s.date});}let lastFarmer=s.farmerId,lastVeg=product?product.id:'';e.target.reset();$('farmer').value=lastFarmer;$('veg').value=lastVeg;if(product)$('price').value=product.price;$('debtBuyerWrap').style.display='none';$('calc').textContent='أدخل البيانات حتى يظهر الحساب.';save();$('farmer').value=lastFarmer;$('veg').value=lastVeg;if(product)$('price').value=product.price;alert(isDebt?'تم حفظ العملية وتسجيل الدين باسم '+debtBuyer:'تم حفظ العملية')};
+window.delSale=i=>{if(confirm('حذف العملية؟')){d.sales=d.sales.filter(s=>s.id!==i);d.debts=d.debts.filter(x=>x.sourceSaleId!==i);save()}};
+window.delFarmer=i=>{if(d.sales.some(s=>s.farmerId===i)){alert('لا يمكن حذف فلاح لديه عمليات.');return}if(confirm('حذف الفلاح؟')){d.farmers=d.farmers.filter(f=>f.id!==i);save()}};
+$('export').onclick=()=>{let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:'application/json'}));a.download='حسابات-الفلاحين-نسخة.json';a.click()};
+$('import').onclick=()=>{let f=$('file').files[0];if(!f)return alert('اختار ملف النسخة');let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.farmers||!x.sales)throw 0;d=x;save();alert('تم الاسترجاع')}catch(e){alert('النسخة غير صالحة')}};r.readAsText(f)};
+$('productForm').onsubmit=e=>{e.preventDefault();let name=$('pname').value.trim(),price=+$('pprice').value;if(!name||price<0)return;let x=d.products.find(p=>p.name===name);if(x)x.price=price;else d.products.push({id:id(),name,price});e.target.reset();save();alert('تم حفظ السعر')};
+window.delProduct=i=>{if(d.sales.some(s=>{let p=d.products.find(x=>x.name===s.veg);return p&&p.id===i})){alert('لا تحذف نوعاً مستخدماً في السجل. غيّر سعره فقط.');return}if(confirm('حذف نوع الخضرة؟')){d.products=d.products.filter(x=>x.id!==i);save()}};
+$('dailyDate').value=new Date().toLocaleDateString('en-CA');$('dailyFarmer').addEventListener('change',renderDaily);$('dailyDate').addEventListener('change',renderDaily);
+$('incomeDate').value=new Date().toLocaleDateString('en-CA');
+$('expenseDate').value=new Date().toLocaleDateString('en-CA');
+$('incomeForm').onsubmit=e=>{e.preventDefault();d.incomes.push({id:id(),desc:$('incomeDesc').value.trim(),amount:+$('incomeAmount').value,date:$('incomeDate').value,note:$('incomeNote').value.trim()});e.target.reset();$('incomeDate').value=new Date().toLocaleDateString('en-CA');save();alert('تم حفظ الوارد')};
+$('expenseForm').onsubmit=e=>{e.preventDefault();d.expenses.push({id:id(),desc:$('expenseDesc').value.trim(),amount:+$('expenseAmount').value,date:$('expenseDate').value,note:$('expenseNote').value.trim()});e.target.reset();$('expenseDate').value=new Date().toLocaleDateString('en-CA');save();alert('تم حفظ المصروف')};
+$('accountFarmer').addEventListener('change',renderAccounts);$('accountFrom').addEventListener('change',renderAccounts);$('accountTo').addEventListener('change',renderAccounts);$('refreshAccounts').addEventListener('click',renderAccounts);
+function setupAuctionName(){
+  let auction=$('auctionName'), admin=$('adminName'), office=$('officeNumber'), adminF=$('adminNameFarmer'), officeF=$('officeNumberFarmer');
+  if(auction) auction.value=d.auctionName||'';
+  if(admin) admin.value=d.adminName||'';
+  if(office) office.value=d.officeNumber||'';
+  if(adminF) adminF.value=d.adminName||'';
+  if(officeF) officeF.value=d.officeNumber||'';
+  const sync=()=>{
+    d.auctionName=auction?auction.value.trim():d.auctionName;
+    d.adminName=admin?admin.value.trim():d.adminName;
+    d.officeNumber=office?office.value.trim():d.officeNumber;
+    d.adminName=adminF?adminF.value.trim():d.adminName;
+    d.officeNumber=officeF?officeF.value.trim():d.officeNumber;
+    localStorage.setItem(KEY,JSON.stringify(d));
+    if($('farmerAuctionHead')) $('farmerAuctionHead').textContent=d.auctionName||'اسم العلوة';
+  };
+  [auction,admin,office,adminF,officeF].filter(Boolean).forEach(el=>el.addEventListener('input',sync));
+  if($('farmerAuctionHead')) $('farmerAuctionHead').textContent=d.auctionName||'اسم العلوة';
+}
+
+function renderBuyerSales(){
+  let el=$('buyerSales');
+  if(!el)return;
+  el.innerHTML=[...d.sales].filter(s=>!s.buyerPrinted).reverse().map(s=>{
+    let f=d.farmers.find(x=>x.id===s.farmerId), c=calc(s);
+    return `<option value="${s.id}">${esc(s.veg)} — ${fmt(s.pieces)} قطعة — ${fmt(s.weight)} كغم — ${money(c.final)} — ${esc(f?.name||'')}</option>`;
+  }).join('');
+}
+function makeBuyerList(){
+  let ids=[...$('buyerSales').selectedOptions].map(o=>o.value);
+  if(!ids.length){alert('اختار عملية واحدة على الأقل');return}
+  let name=$('buyerName').value.trim()||'البقال';
+  let address=$('buyerAddress').value.trim();
+  let rows=ids.map(i=>d.sales.find(s=>s.id===i)).filter(Boolean);
+  let total={pieces:0,weight:0,final:0};
+  let body=rows.map((s,i)=>{
+    let c=calc(s);
+    total.pieces+=s.pieces; total.weight+=s.weight; total.final+=c.final;
+    return `<tr><td>${money(c.final)}</td><td>${fmt(s.weight)}</td><td>${money(s.price)}</td><td>${fmt(s.pieces)}</td><td><b>${esc(s.veg)}</b></td></tr>`;
+  }).join('');
+  let today=new Date().toLocaleDateString('ar-IQ');
+  $('buyerListResult').innerHTML=`<div class="paper-print">
+    <div class="paper-head"><div class="market">${esc(d.auctionName||'اسم العلوة')}</div><div class="sub">لبيع الفواكه والخضروات بالجملة</div><div class="admin">بإدارة: ${esc(d.adminName||'')} &nbsp;&nbsp; رقم المكتب: ${esc(d.officeNumber||'')}</div></div>
+    <div class="paper-meta"><div>حضرة السيد: ${esc(name)} المحترم</div><div>التاريخ: ${today}</div><div>العنوان: ${esc(address||'________________________')}</div></div>
+    <table class="paper-table"><thead><tr><th class="amount">المبلغ</th><th class="weight">الوزن</th><th class="price">السعر</th><th class="count">العدد</th><th class="type">النوع</th></tr></thead><tbody>${body}</tbody></table>
+    <div class="paper-total">المجموع: <strong>${money(total.final)}</strong></div>
+    <div class="paper-footer"><div>ملاحظة: الخطأ والنقص مرجوع للطرفين</div><div>التوقيع: __________________</div></div>
+    <button class="btn no-print" onclick="printBuyer()">🖨️ طباعة القائمة</button></div>`;
+}
+window.printBuyer=function(){document.body.classList.remove('print-farmer');document.body.classList.add('print-buyer');window.print();};
+window.printBuyerList=function(ids){window.printBuyer();};
+function renderFarmerListChoices(){
+  let fsel=$('farmerListFarmer'), ssel=$('farmerSales');
+  if(!fsel||!ssel)return;
+  let old=fsel.value;
+  fsel.innerHTML='<option value="">اختار الفلاح</option>'+d.farmers.map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join('');
+  if(old) fsel.value=old;
+  let fid=fsel.value;
+  ssel.innerHTML=fid ? [...d.sales].filter(s=>s.farmerId===fid).reverse().map(s=>{let c=calc(s);return `<option value="${s.id}">${esc(s.veg)} — ${fmt(s.pieces)} قطعة — ${fmt(s.weight)} كغم — ${money(c.base+c.farmer)}</option>`}).join('') : '';
+}
+function makeFarmerList(){
+  let fid=$('farmerListFarmer').value, ids=[...$('farmerSales').selectedOptions].map(o=>o.value);
+  if(!fid){alert('اختار الفلاح');return}
+  if(!ids.length){alert('اختار عملية واحدة على الأقل');return}
+  let farmer=d.farmers.find(f=>f.id===fid), address=$('farmerAddress').value.trim(), rows=ids.map(i=>d.sales.find(s=>s.id===i)).filter(Boolean);
+  let total={pieces:0,weight:0,net:0};
+  let body=rows.map((s,i)=>{let c=calc(s);total.pieces+=s.pieces;total.weight+=s.weight;total.net+=c.base+c.farmer;return `<tr><td><b>${money(c.base+c.farmer)}</b></td><td>${fmt(s.weight)}</td><td>${money(s.price)}</td><td>${fmt(s.pieces)}</td><td><b>${esc(s.veg)}</b></td></tr>`}).join('');
+  let today=new Date().toLocaleDateString('ar-IQ');
+  $('farmerListResult').innerHTML=`<div class="paper-print"><div class="paper-head"><div class="market">${esc(d.auctionName||'اسم العلوة')}</div><div class="sub">لبيع الفواكه والخضروات بالجملة</div><div class="admin">بإدارة: ${esc(d.adminName||'')} &nbsp;&nbsp; رقم المكتب: ${esc(d.officeNumber||'')}</div></div><div class="paper-meta"><div>حضرة السيد: ${esc(farmer?.name||'')} المحترم</div><div>التاريخ: ${today}</div><div>العنوان: ${esc(address||'________________________')}</div></div><table class="paper-table"><thead><tr><th class="amount">المبلغ</th><th class="weight">الوزن</th><th class="price">السعر</th><th class="count">العدد</th><th class="type">النوع</th></tr></thead><tbody>${body}</tbody></table><div class="paper-total">المجموع: <strong>${money(total.net)}</strong></div><div class="paper-footer"><div>ملاحظة: الخطأ والنقص مرجوع للطرفين</div><div>التوقيع: __________________</div></div><button class="btn no-print" onclick="printFarmer()">🖨️ طباعة القائمة</button></div>`;
+}
+
+window.printFarmer=function(){document.body.classList.remove('print-buyer');document.body.classList.add('print-farmer');window.print();};
+window.addEventListener('afterprint',function(){document.body.classList.remove('print-buyer','print-farmer');});
+
+$('makeBuyerList').addEventListener('click',makeBuyerList);
+$('farmerListFarmer').addEventListener('change',renderFarmerListChoices);
+$('makeFarmerList').addEventListener('click',makeFarmerList);
+$('accountFrom').value='';$('accountTo').value='';
+setupAuctionName();
+renderBuyerSales();
+renderFarmerListChoices();
+render();
+renderDaily();
+
+</script>
+</body></html>
